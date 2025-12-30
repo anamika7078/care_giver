@@ -1,0 +1,256 @@
+/* Invoices Page Styling */
+
+.invoices-container {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Header Styles */
+.invoices-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.invoices-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 4px 0;
+}
+
+.invoices-subtitle {
+    color: #666;
+    margin: 0;
+    font-size: 14px;
+}
+
+.create-invoice-btn {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    height: 40px;
+    padding: 0 16px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+}
+
+/* Filters Card */
+.filters-card {
+    margin-bottom: 24px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
+}
+
+.filters-container {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.search-filter, .status-filter {
+    display: flex;
+    align-items: center;
+    background: #f9fafb;
+    border-radius: 6px;
+    padding: 0 12px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s;
+}
+
+.search-filter:focus-within, .status-filter:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.search-icon, .filter-icon {
+    color: #9ca3af;
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.search-input {
+    background: transparent;
+    border: none !important;
+    height: 40px;
+    padding: 0;
+}
+
+.search-input:focus, .search-input:active {
+    box-shadow: none !important;
+}
+
+.status-select {
+    min-width: 150px;
+}
+
+.status-select .ant-select-selector {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+.status-select .ant-select-arrow {
+    color: #9ca3af;
+}
+
+/* Table Styles */
+.invoices-table-card {
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.invoices-table .ant-table-thead > tr > th {
+    background: #f9fafb;
+    color: #6b7280;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.invoices-table .ant-table-tbody > tr > td {
+    padding: 16px;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.2s;
+}
+
+.invoices-table-row:hover td {
+    background: #f9fafb;
+}
+
+/* Invoice Number */
+.invoice-number {
+    font-weight: 500;
+    color: #3b82f6;
+}
+
+/* Client Cell */
+.client-cell {
+    display: flex;
+    align-items: center;
+}
+
+.client-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.client-name {
+    font-weight: 500;
+    color: #111827;
+}
+
+.client-email {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+/* Amount Cell */
+.amount-cell {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    color: #111827;
+}
+
+/* Status Tag */
+.status-tag {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+    border: none;
+}
+
+/* Actions */
+.actions-cell {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.action-btn {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    color: #6b7280;
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    background: #f3f4f6;
+    color: #3b82f6;
+}
+
+.action-icon {
+    font-size: 16px;
+}
+
+/* Empty State */
+.ant-empty {
+    padding: 48px 0;
+}
+
+.ant-empty-description {
+    color: #9ca3af;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .invoices-header {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .filters-container {
+        flex-direction: column;
+    }
+    
+    .search-filter, .status-filter {
+        width: 100%;
+    }
+    
+    .status-select {
+        width: 100%;
+    }
+    
+    .invoices-table-card {
+        overflow-x: auto;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .invoices-header, .filters-card, .ant-table-thead th:last-child, .ant-table-tbody td:last-child {
+        display: none !important;
+    }
+    
+    .invoices-table-card {
+        border: none;
+        box-shadow: none;
+    }
+    
+    .invoices-table {
+        width: 100% !important;
+    }
+}

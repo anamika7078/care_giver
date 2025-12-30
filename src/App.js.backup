@@ -1,0 +1,223 @@
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { useEffect } from 'react';
+import theme from './theme/theme';
+
+// Layouts
+import AdminLayout from './layouts/AdminLayout';
+import FamilyLayout from './layouts/FamilyLayout';
+
+// Public Pages
+import Home from './pages/Home';
+import About from './pages/About';
+import Services from './pages/Services';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import NotFound from './pages/notfound';
+import Pricing from './pages/Pricing';
+import Contact from './pages/contact';
+import Blog from './pages/Blog';
+import Testimonials from './pages/Testimonials';
+
+// Dashboard Components
+import FamilyDashboard from './pages/family/Dashboard';
+import CaregiverDashboard from './pages/admin/Dashboard';
+
+// Admin Pages
+import AdminDashboard from './pages/admin/Dashboard';
+import ViewBookings from './pages/admin/ViewBookings';
+import AssignCaregiver from './pages/admin/AssignCaregiver';
+import UpdateStatus from './pages/admin/UpdateStatus';
+import Invoices from './pages/admin/Invoices';
+import ReportsOverview from './pages/admin/reports/ReportsOverview';
+import Caregivers from './pages/admin/Caregivers';
+
+// Portal (Family) Pages
+import BookService from './pages/BookService';
+import Emergency from './pages/portal/Emergency';
+import AddFamilyMember from './pages/portal/AddFamilyMember';
+import EldersList from './pages/portal/Elders/EldersList';
+import ElderProfile from './pages/portal/Elders/ElderProfile';
+
+// Components
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import ProtectedRoute from './components/ProtectedRoute';
+import PrivateRoute from './components/PrivateRoute';
+import UploadDocument from './components/UploadDocuments';
+import './index.css';
+
+// Unauthorized Component
+const Unauthorized = () => (
+  <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="p-8 bg-white rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold text-red-600 mb-4">Unauthorized Access</h2>
+      <p>You don't have permission to view this page.</p>
+    </div>
+  </div>
+);
+
+// Default redirect component
+function DefaultRedirect() {
+  const { user } = useAuth();
+
+  useEffect(() => {
+    console.log('User role in DefaultRedirect:', user?.role);
+  }, [user]);
+
+  if (user?.role === 'admin') {
+    return <Navigate to="/admin" replace />;
+  } else if (user?.role === 'caregiver') {
+    return <Navigate to="/caregiver/dashboard" replace />;
+  } else if (user?.role === 'family_member' || user?.role === 'family') {
+    return <Navigate to="/family/dashboard" replace />;
+  } else {
+    return <Navigate to="/family/dashboard" replace />;
+  }
+}
+
+function App() {
+  const location = useLocation();
+
+  // Paths where navbar should be hidden
+  const hideNavbarPaths = [
+    '/login',
+    '/register',
+    '/admin',
+    '/caregiver',
+    '/family'
+  ];
+
+  // Check if current path should hide navbar
+  const shouldHideNavbar = hideNavbarPaths.some(path =>
+    location.pathname === path || location.pathname.startsWith(`${path}/`)
+  );
+
+  return (
+    <ThemeProvider theme={theme}>
+      <StyledEngineProvider injectFirst>
+        <CssBaseline />
+        <div className="App">
+
+          <AuthProvider>
+            <div className="flex flex-col min-h-screen">
+              {!shouldHideNavbar && location.pathname !== '/' && <Navbar />}
+              {location.pathname === '/' && <Navbar />}
+              <main className="flex-grow">
+                <Routes>
+                  {/* Public Routes */}
+                  <Route path="/" element={<Home />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/services" element={<Services />} />
+                  <Route path="/pricing" element={<Pricing />} />
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/testimonials" element={<Testimonials />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/unauthorized" element={<Unauthorized />} />
+
+                  {/* Document Upload */}
+                  <Route
+                    path="/documents/upload"
+                    element={
+                      <PrivateRoute>
+                        <UploadDocument />
+                      </PrivateRoute>
+                    }
+                  />
+
+                  {/* Admin Routes */}
+                  <Route
+                    path="/admin/*"
+                    element={
+                      <ProtectedRoute roles={['admin']}>
+                        <AdminLayout>
+                          <Routes>
+                            <Route index element={<AdminDashboard />} />
+                            <Route path="bookings" element={<ViewBookings />} />
+                            <Route path="assign-caregiver" element={<AssignCaregiver />} />
+                            <Route path="update-status" element={<UpdateStatus />} />
+                            <Route path="invoices" element={<Invoices />} />
+                            <Route path="reports" element={<ReportsOverview />} />
+                            <Route path="caregivers" element={<Caregivers />} />
+                          </Routes>
+                        </AdminLayout>
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  {/* Family Member Routes */}
+                  <Route
+                    path="/family"
+                    element={
+                      <ProtectedRoute roles={['user', 'family', 'family_member']}>
+                        <PrivateRoute allowedRoles={['family', 'family_member', 'admin']}>
+                          <FamilyLayout>
+                            <Routes>
+                              <Route index element={<Navigate to="dashboard" replace />} />
+                              <Route path="dashboard" element={<FamilyDashboard />} />
+                              <Route path="elders" element={<EldersList />} />
+                              <Route path="elders/:id" element={<ElderProfile />} />
+                              <Route path="book-service" element={<BookService />} />
+                              <Route path="documents" element={<UploadDocument />} />
+                              <Route path="emergency" element={<Emergency />} />
+                              <Route path="add-member" element={<AddFamilyMember />} />
+                            </Routes>
+                          </FamilyLayout>
+                        </PrivateRoute>
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  {/* Caregiver Routes */}
+                  <Route
+                    path="/caregiver/*"
+                    element={
+                      <ProtectedRoute roles={['caregiver']}>
+                        <AdminLayout>
+                          <Routes>
+                            <Route index element={<CaregiverDashboard />} />
+                            <Route path="dashboard" element={<CaregiverDashboard />} />
+                          </Routes>
+                        </AdminLayout>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <AdminLayout>
+                    <Routes>
+                      <Route index element={<CaregiverDashboard />} />
+                      <Route path="dashboard" element={<CaregiverDashboard />} />
+                    </Routes>
+                  </AdminLayout>
+                </ProtectedRoute>
+                  }
+                />
+
+                {/* Default redirect based on role */}
+                <Route
+                  path="/"
+                  element={
+                    <ProtectedRoute>
+                      <DefaultRedirect />
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* 404 Route */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
+            <Footer />
+        </div>
+      </AuthProvider>
+
+    </div>
+      </StyledEngineProvider >
+    </ThemeProvider >
+  );
+}
+
+export default App;
